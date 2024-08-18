@@ -1,63 +1,87 @@
 package main
 
 import (
-	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
-	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
-	"strings"
+	"log"
 )
 
 var windowSize = fyne.Size{Width: 800, Height: 480}
+var directory binding.String = binding.NewString()
 
-//var dialogSize = fyne.Size{Width: 780, Height: 460}
+//func fillInFolder(w fyne.Window, h *widget.Label) {
+//	dialog.ShowFolderOpen(func(dir fyne.ListableURI, err error) {
+//		if err != nil {
+//			dialog.ShowError(err, w)
+//			return
+//		}
+//		directory := dir.Path()
+//		log.Println("selected folder in fillInFolder: ", directory)
+//		if err != nil {
+//			dialog.ShowError(err, w)
+//			return
+//		}
+//	}, w)
+//}
 
-func fillInFolder(button *widget.Button, w fyne.Window) {
-	fd := dialog.NewFileOpen(func(rc fyne.URIReadCloser, err error) {
-		if err != nil {
-			showSubmenuError(fmt.Errorf("Could not open file: %w.", err), w)
-			return
-		}
-		if rc != nil {
-			if in != nil {
-				in.Close()
-			}
-			in = rc
-			button.SetText(rc.URI().Name())
-		} else {
-			button.SetText("Select input file")
-		}
-	}, w)
-	fd.Resize(dialogSize)
-	fd.SetOnClosed(func() {
-		w.Canvas().SetOnTypedKey(func(e *fyne.KeyEvent) { handleSubmenuKey(e, w) })
-	})
-	w.Canvas().SetOnTypedKey(func(e *fyne.KeyEvent) { handleDialogKey(e, w, fd) })
-	fd.Show()
-}
-
-func dirForm(w fyne.Window) fyne.CanvasObject {
-	inFolderLabel := widget.NewLabel("Séléction des dossiers:")
-	var inFolder *widget.Button
-	if inFolder == nil {
-		inFolder = widget.NewButton("Dossier source !", nil)
-	}
-	inFolder.OnTapped = func() { fillInFolder(inFolder, w) }
-
-	pad := strings.Repeat(" ", 32)
-	submit := widget.NewButton(pad+"Valider"+pad, func() { validate(w) })
-	form := container.New(layout.NewFormLayout(), inFolderLabel, inFolder)
-	return container.NewPadded(container.NewCenter(container.NewVBox(form, submit)))
-
-}
+//func checkInFolder(w fyne.Window, h *widget.Label, dirCheck string) {
+//	log.Printf("selected folder checkInFolder: %s", directory)
+//	d := dialog.NewCustom("Recherche en cours", "Annuler", widget.NewProgressBarInfinite(), w)
+//	d.Show()
+//}
 
 func main() {
-	a := app.New()
+	a := app.NewWithID("APPID")
 	w := a.NewWindow("Filecheck")
 	w.Resize(windowSize)
-	dirForm(w)
+	//folderWindow := widget.NewLabel("Selection du dossier: ")
+	folderSelectionButton := widget.NewButton("Sélection", func() {
+		//fillInFolder(w, folderWindow)
+		dialog.ShowFolderOpen(func(dir fyne.ListableURI, err error) {
+			if err != nil {
+				dialog.ShowError(err, w)
+				return
+			}
+			directory.Set(dir.Path())
+			log.Println("selected folder in folderSelectionButton: ", dir.Path())
+		}, w)
+	})
+	folderSelectionWindow := &widget.Form{
+		Items: []*widget.FormItem{
+			{Text: "Sélectionner le dossier: ", Widget: folderSelectionButton}},
+		OnSubmit: func() {
+			folder, _ := directory.Get()
+			log.Println("Selected folder in folderSelectionWindow: ", folder)
+		},
+	}
+	//checkFolderContent :=  container.NewVBox(directory, widget.NewButton("Chercher les fichiers en doubles", func() { checkInFolder(w, folderWindow, folderSelectionWindow) })
+
+	w.SetContent(
+		container.NewVBox(
+			//checkFolderContent,
+			folderSelectionWindow,
+		),
+	)
+	//w.SetContent(container.NewVBox(
+	//	folderWindow,
+	//	widget.NewButton("Sélection", func() {
+	//		fillInFolder(w, folderWindow)
+	//	}),
+	//	widget.NewButton("Chercher les fichiers en doubles", func() {
+	//		checkInFolder(w, folderWindow, directory)
+	//	}),
+	//))
+
+	//selectFolder := widget.NewButton("Sélection", func() { fillInFolder(w, folderWindow) })
+	//w.SetContent(
+	//	container.NewVSplit(
+	//		selectFolder,
+	//		checkFolderContent,
+	//	),
+	//)
 	w.ShowAndRun()
 }
