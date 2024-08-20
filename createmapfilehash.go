@@ -8,10 +8,10 @@ import (
 	"os"
 )
 
-func createmapfilehash() map[string]string {
+func createmapfilehash(dir []string) map[string]string {
 	var fileshamap map[string]string
 	fileshamap = make(map[string]string)
-	for _, element := range createfilelist() {
+	for _, element := range dir {
 		f, err := os.Open(element)
 		if err != nil {
 			log.Fatal(err)
