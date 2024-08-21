@@ -9,8 +9,7 @@ import (
 )
 
 func createmapfilehash(dir []string) map[string]string {
-	var fileshamap map[string]string
-	fileshamap = make(map[string]string)
+	fileshamap := make(map[string]string)
 	for _, element := range dir {
 		f, err := os.Open(element)
 		if err != nil {

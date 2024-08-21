@@ -7,7 +7,7 @@ import (
 
 func createfilelist(folder string) []string {
 	fileList := make([]string, 0)
-	e := filepath.Walk(folder, func(path string, f os.FileInfo, err error) error {
+	e := filepath.Walk(folder, func(path string, f os.FileInfo, errors error) error {
 		unusedir, err := os.Stat(path)
 		if unusedir.IsDir() {
 		} else {

@@ -13,15 +13,15 @@ import (
 
 var windowSize = fyne.Size{Width: 800, Height: 480}
 var directory binding.String = binding.NewString()
-var file binding.String = binding.NewString()
+var sameFileList []string
 
-func oneFolderCheck(dir string) map[string]string {
+func oneFolderCheck(dir string) []string {
 	fileList := createfilelist(dir)
 	log.Printf("file list: %v", fileList)
 	fListMapHash := createmapfilehash(fileList)
-	log.Printf("file list: %v", fListMapHash)
+	log.Printf("listhashmap: %v", fListMapHash)
 	sameFileList := comparemap(fListMapHash)
-	log.Printf("file list: %v", sameFileList)
+	log.Printf("same file list: %v", sameFileList)
 	return sameFileList
 }
 
@@ -55,10 +55,14 @@ func main() {
 		d.Show()
 		folder, _ := directory.Get()
 		log.Println("Selected folder in checkFolderContent: ", folder)
-		log.Printf("filelist: %v")
 		oneFolderCheck(folder)
 	},
 	)
+	//create a text box with text for results
+	showTextDuplicates := widget.NewLabel("Liste des fichiers en double dans le dossier: ")
+
+	//create a text box with the name of the folder selected
+	showDuplicatesList := widget.NewLabel("test")
 
 	// generate window content
 	w.SetContent(
@@ -67,7 +71,11 @@ func main() {
 				showTextfolderSelect,
 				showSelectedFolder),
 			folderSelectionButton,
-			checkFolderContent))
+			checkFolderContent,
+			container.NewHBox(
+				showTextDuplicates,
+				showDuplicatesList),
+		))
 
 	//show window when run
 	w.ShowAndRun()
