@@ -13,7 +13,8 @@ import (
 
 var windowSize = fyne.Size{Width: 800, Height: 480}
 var directory binding.String = binding.NewString()
-var sameFileList []string
+
+//var sameFileList []string
 
 func oneFolderCheck(dir string) []string {
 	fileList := createfilelist(dir)
