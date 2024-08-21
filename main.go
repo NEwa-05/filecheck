@@ -15,10 +15,14 @@ var windowSize = fyne.Size{Width: 800, Height: 480}
 var directory binding.String = binding.NewString()
 var file binding.String = binding.NewString()
 
-func oneFolderCheck(dir string) []string {
-	filelist := createfilelist(dir)
-	log.Printf("file list: %v", filelist)
-	return filelist
+func oneFolderCheck(dir string) map[string]string {
+	fileList := createfilelist(dir)
+	log.Printf("file list: %v", fileList)
+	fListMapHash := createmapfilehash(fileList)
+	log.Printf("file list: %v", fListMapHash)
+	sameFileList := comparemap(fListMapHash)
+	log.Printf("file list: %v", sameFileList)
+	return sameFileList
 }
 
 func main() {
