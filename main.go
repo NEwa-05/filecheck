@@ -11,16 +11,13 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-var windowSize = fyne.Size{Width: 800, Height: 480}
+var windowSize = fyne.Size{Width: 800, Height: 600}
 var directory binding.String = binding.NewString()
-
-//var sameFileList []string
+var sameFileListPointer binding.DataList
 
 func oneFolderCheck(dir string) []string {
 	fileList := createfilelist(dir)
-	log.Printf("file list: %v", fileList)
 	fListMapHash := createmapfilehash(fileList)
-	log.Printf("listhashmap: %v", fListMapHash)
 	sameFileList := comparemap(fListMapHash)
 	log.Printf("same file list: %v", sameFileList)
 	return sameFileList
@@ -56,14 +53,22 @@ func main() {
 		d.Show()
 		folder, _ := directory.Get()
 		log.Println("Selected folder in checkFolderContent: ", folder)
-		oneFolderCheck(folder)
+		sameFileList := oneFolderCheck(folder)
+		d.Hide()
+		log.Printf("same file list: %v", sameFileList)
+		sameFileListPointer = binding.BindStringList(&sameFileList)
 	},
 	)
-	//create a text box with text for results
-	showTextDuplicates := widget.NewLabel("Liste des fichiers en double dans le dossier: ")
 
 	//create a text box with the name of the folder selected
-	showDuplicatesList := widget.NewLabel("test")
+	showDuplicatesList := widget.NewListWithData(
+		sameFileListPointer,
+		func() fyne.CanvasObject {
+			return widget.NewLabel("Liste des fichiers en double dans le dossier: ")
+		},
+		func(i binding.DataItem, o fyne.CanvasObject) {
+			o.(*widget.Label).Bind(i.(binding.String))
+		})
 
 	// generate window content
 	w.SetContent(
@@ -73,9 +78,10 @@ func main() {
 				showSelectedFolder),
 			folderSelectionButton,
 			checkFolderContent,
-			container.NewHBox(
-				showTextDuplicates,
-				showDuplicatesList),
+			showDuplicatesList,
+			//container.NewHBox(
+			//	showTextDuplicates,
+			//	showDuplicatesList),
 		))
 
 	//show window when run
