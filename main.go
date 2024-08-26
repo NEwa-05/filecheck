@@ -8,22 +8,24 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
 
 var windowSize = fyne.Size{Width: 800, Height: 600}
 var directory binding.String = binding.NewString()
-var sameFileListPointer binding.DataList
+var sameFileList binding.StringList = binding.NewStringList()
 
 func oneFolderCheck(dir string) []string {
 	fileList := createfilelist(dir)
 	fListMapHash := createmapfilehash(fileList)
-	sameFileList := comparemap(fListMapHash)
-	log.Printf("same file list: %v", sameFileList)
-	return sameFileList
+	sFiles := comparemap(fListMapHash)
+	log.Printf("same file list: %v", sFiles)
+	return sFiles
 }
 
 func main() {
+
 	//create window
 	a := app.NewWithID("APPID")
 	w := a.NewWindow("Filecheck")
@@ -53,36 +55,36 @@ func main() {
 		d.Show()
 		folder, _ := directory.Get()
 		log.Println("Selected folder in checkFolderContent: ", folder)
-		sameFileList := oneFolderCheck(folder)
+		sameFiles := oneFolderCheck(folder)
 		d.Hide()
-		log.Printf("same file list: %v", sameFileList)
-		sameFileListPointer = binding.BindStringList(&sameFileList)
-	},
-	)
+		log.Printf("same file list: %v", sameFiles)
+		sameFileList.Set(sameFiles)
+	})
 
-	//create a text box with the name of the folder selected
+	// create a text box with the name of the folder selected
 	showDuplicatesList := widget.NewListWithData(
-		sameFileListPointer,
+		sameFileList,
 		func() fyne.CanvasObject {
-			return widget.NewLabel("Liste des fichiers en double dans le dossier: ")
+			return widget.NewLabel("Liste des fichiers identiques: ")
 		},
 		func(i binding.DataItem, o fyne.CanvasObject) {
 			o.(*widget.Label).Bind(i.(binding.String))
 		})
 
-	// generate window content
 	w.SetContent(
-		container.NewVBox(
-			container.NewHBox(
+		container.New(
+			layout.NewVBoxLayout(),
+			container.New(
+				layout.NewHBoxLayout(),
 				showTextfolderSelect,
 				showSelectedFolder),
 			folderSelectionButton,
 			checkFolderContent,
-			showDuplicatesList,
-			//container.NewHBox(
-			//	showTextDuplicates,
-			//	showDuplicatesList),
-		))
+			container.New(
+				layout.NewStackLayout(),
+				showDuplicatesList),
+		),
+	)
 
 	//show window when run
 	w.ShowAndRun()
