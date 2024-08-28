@@ -8,7 +8,6 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
-	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -67,24 +66,21 @@ func main() {
 		func() fyne.CanvasObject {
 			return widget.NewLabel("Liste des fichiers identiques: ")
 		},
+
 		func(i binding.DataItem, o fyne.CanvasObject) {
 			o.(*widget.Label).Bind(i.(binding.String))
 		})
 
+	showDuplicatesList.ExtendBaseWidget(&widget.List{Length: sameFileList.Length})
+
 	w.SetContent(
-		container.New(
-			layout.NewVBoxLayout(),
-			container.New(
-				layout.NewHBoxLayout(),
+		container.NewVBox(
+			container.NewHBox(
 				showTextfolderSelect,
 				showSelectedFolder),
 			folderSelectionButton,
 			checkFolderContent,
-			container.New(
-				layout.NewStackLayout(),
-				showDuplicatesList),
-		),
-	)
+			showDuplicatesList))
 
 	//show window when run
 	w.ShowAndRun()
