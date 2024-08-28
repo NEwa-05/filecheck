@@ -43,10 +43,10 @@ func main() {
 	})
 
 	//create a text box with text
-	showTextfolderSelect := widget.NewLabel("Dossier selectionné: ")
+	// showTextfolderSelect := widget.NewLabel("Dossier selectionné: ")
 
 	//create a text box with the name of the folder selected
-	showSelectedFolder := widget.NewLabelWithData(directory)
+	// showSelectedFolder := widget.NewLabelWithData(directory)
 
 	//button that will start the check process
 	checkFolderContent := widget.NewButton("Chercher les fichiers en doubles", func() {
@@ -71,17 +71,19 @@ func main() {
 			o.(*widget.Label).Bind(i.(binding.String))
 		})
 
-	showDuplicatesList.ExtendBaseWidget(&widget.List{Length: sameFileList.Length})
+	// w.SetContent(
+	// 	container.NewVBox(
+	// 		container.NewHBox(
+	// 			showTextfolderSelect,
+	// 			showSelectedFolder),
+	// 		folderSelectionButton,
+	// 		checkFolderContent,
+	// 		container.New(
+	// 			layout.NewStackLayout(),
+	// 			showDuplicatesList)))
 
 	w.SetContent(
-		container.NewVBox(
-			container.NewHBox(
-				showTextfolderSelect,
-				showSelectedFolder),
-			folderSelectionButton,
-			checkFolderContent,
-			showDuplicatesList))
-
+		container.NewBorder(folderSelectionButton, checkFolderContent, nil, nil, showDuplicatesList))
 	//show window when run
 	w.ShowAndRun()
 }
