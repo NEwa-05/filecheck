@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ darwin, linux, windows ]
-        arch: [ amd64, arm64 ]
+        os: [ windows ]
+        arch: [ amd64 ]
     steps:
       - name: Check out code
         uses: actions/checkout@v4
