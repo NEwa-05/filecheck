@@ -15,6 +15,7 @@ jobs:
       matrix:
         os: [ windows ]
         arch: [ amd64 ]
+        cc: [ x86_64-w64-mingw64-gcc ]
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -30,4 +31,5 @@ jobs:
         env:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
+          CC: ${{ matrix.cc }}
         run: go build
