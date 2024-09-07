@@ -5,20 +5,18 @@ import (
 	"path/filepath"
 )
 
-func createfilelist() []string {
+func createfilelist(folder string) []string {
 	fileList := make([]string, 0)
-	for _, element := range getpathfromuser() {
-		e := filepath.Walk(element, func(path string, f os.FileInfo, err error) error {
-			unusedir, err := os.Stat(path)
-			if unusedir.IsDir() {
-			} else {
-				fileList = append(fileList, path)
-			}
-			return err
-		})
-		if e != nil {
-			panic(e)
+	e := filepath.Walk(folder, func(path string, f os.FileInfo, errors error) error {
+		unusedir, err := os.Stat(path)
+		if unusedir.IsDir() {
+		} else {
+			fileList = append(fileList, path)
 		}
+		return err
+	})
+	if e != nil {
+		panic(e)
 	}
 	return fileList
 }

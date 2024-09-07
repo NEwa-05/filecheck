@@ -1,19 +1,29 @@
 package main
 
-func comparemap() map[string]string {
+import "log"
 
-	mapone := createmapfilehash()
-	maptwo := createmapfilehash()
+var sameFilesList []string
 
-	var samefiles map[string]string
-	samefiles = make(map[string]string)
+func comparemap(fileshamap map[string]string) []string {
 
-	for k1, v1 := range mapone {
-		for k2, v2 := range maptwo {
-			if v1 == v2 {
-				samefiles[k1] = k2
-			}
+	tempmap := make(map[string]struct{})
+
+	for k, v := range fileshamap {
+		_, has := tempmap[v]
+		if has {
+			log.Println(k)
+			sameFilesList = append(sameFilesList, k)
 		}
+		tempmap[v] = struct{}{}
 	}
-	return samefiles
+
+	// 2 maps (folders)
+	//for k1, v1 := range fileshamap {
+	//	for k2, v2 := range fileshamap {
+	//		if v1 == v2 {
+	//			samefiles[k1] = k2
+	//		}
+	//	}
+	//}
+	return sameFilesList
 }
