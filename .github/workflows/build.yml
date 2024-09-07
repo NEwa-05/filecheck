@@ -10,7 +10,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: fyneio/fyne-cross
     strategy:
       matrix:
         os: [ windows ]
