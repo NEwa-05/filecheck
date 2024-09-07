@@ -30,4 +30,4 @@ jobs:
         env:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
-        run: make binary
+        run: go build
