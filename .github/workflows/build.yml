@@ -17,7 +17,8 @@ jobs:
       fail-fast: false
       matrix:
         go-version: [stable]
-        os: [ubuntu, macos, windows]
+        os: [ubuntu-stable, macos-stable, windows-stable]
+        goos: [ubuntu, macos, windows]
     steps:
       - name: Check out code
         uses: actions/checkout@v5
@@ -35,5 +36,5 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
       - name: Build
         env:
-          GOOS: ${{ matrix.os }}
+          GOOS: ${{ matrix.goos }}
         run: go build
