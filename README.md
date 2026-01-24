@@ -1,19 +1,23 @@
-# README
+# FILECHECK
 
-## About
+## Description
 
-This is the official Wails Vanilla template.
+This repo contains code to analyze folder content and report doublons.
+Since it is for elders on Windows, I'm using Fyne to create the UI.
 
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
+## Why this project
 
-## Live Development
+I wanted to create on my own this tool for my mother, because it is a good way to learn some coding skills.
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+## quick build
 
-## Building
+```bash
+make build
+```
 
-To build a redistributable, production mode package, use `wails build`.
+## Next Steps
+
+- Improve UI
+- add possibility to remove doublons
+- add possibility to create an archive with doublons files
+
