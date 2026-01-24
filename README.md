@@ -12,7 +12,7 @@ I wanted to create on my own this tool for my mother, because it is a good way t
 ## quick build
 
 ```bash
-make build
+make binary
 ```
 
 ## Next Steps

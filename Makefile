@@ -1,37 +1,34 @@
 BIN_NAME := filecheck
-MAIN_DIRECTORY := ./
 
 TAG_NAME := $(shell git tag -l --contains HEAD)
 SHA := $(shell git rev-parse --short HEAD)
 VERSION ?= $(if $(TAG_NAME),$(TAG_NAME),v0.0.0-$(SHA))
-BUILD_DATE := $(shell date -u '+%Y-%m-%d_%I:%M:%S%p')
+VERSION_GIT := $(if $(TAG_NAME),$(TAG_NAME),$(SHA))
 
 # Default build target
 GOOS := $(shell go env GOOS)
 GOARCH := $(shell go env GOARCH)
+GOGC ?=
 
-DOCKER_BUILD_PLATFORMS ?= linux/amd64, windows/amd64
-
-## Build targets:
-./bin/%/$(BIN_NAME): binpath $(BUILD_DEPS)
-	@echo SHA: $(SHA) $(BUILD_DATE)
-	$(eval GOOS := $(call word-slash, $*, 1))
-	$(eval GOARCH := $(call word-slash, $*, 2))
-	CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(BUILD_FLAGS) -o $@ ${MAIN_DIRECTORY}
+.PHONY: default
+#? default: Run `make binary`
+default: binary
 
 binpath:
 	mkdir -p bin
 
-# Target for building development image.
-.PHONY: build
-build: $(MAKE) -C $(CURDIR) build
+binary: binpath
+	CGO_ENABLED=1 GOGC=${GOGC} GOOS=${GOOS} GOARCH=${GOARCH} go build \
+	-ldflags="-extldflags=-Wl,-no_warn_duplicate_libraries" \
+	-installsuffix nocgo -o "./bin/${GOOS}/${GOARCH}/$(BIN_NAME)"
 
-.PHONY: build-linux-amd64
-build-linux-amd64: build ./dist/linux/amd64/$(BIN_NAME)
+binary-linux-amd64: export GOOS := linux
+binary-linux-amd64: export GOARCH := amd64
+binary-linux-amd64:
+	@$(MAKE) binary
 
-.PHONY: build-windows-amd64
-build-windows-amd64: build ./dist/windows/amd64/$(BIN_NAME)
-
-# Reset implicit suffixes and force go suffix only.
-.SUFFIXES:
-.SUFFIXES: .go
+binary-windows-amd64: export GOOS := windows
+binary-windows-amd64: export GOARCH := amd64
+binary-windows-amd64: export BIN_NAME := filecheck.exe
+binary-windows-amd64:
+	@$(MAKE) binary
