@@ -2,7 +2,7 @@ name: Build Binaries
 
 on:
   release:
-    types: [published]
+    types: [published, created, released]
 env:
   GO_VERSION: '1.25'
   CGO_ENABLED: 1
