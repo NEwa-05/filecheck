@@ -34,4 +34,8 @@ jobs:
           echo "CGO_LDFLAGS=-fuse-ld=lld" >> "$GITHUB_ENV"
         if: ${{ runner.os == 'Linux' }}
       - name: Build
-        run: go build
+        run: go build -o filecheck-${{ matrix.os }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: file-${{ matrix.os }}
