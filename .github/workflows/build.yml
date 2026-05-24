@@ -1,11 +1,8 @@
 name: Build Binaries
 
 on:
-  push:
-    branches: ["create_workflow"]
-  pull_request:
-    branches: [ "master" ]
-
+  release:
+    types: [published]
 env:
   GO_VERSION: '1.25'
   CGO_ENABLED: 1
@@ -40,3 +37,7 @@ jobs:
         with:
           name: filecheck-${{ matrix.os }}
           path: ${{ github.workspace }}/filecheck-${{ matrix.os }}
+      - name: Add Artifact to release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: filecheck-${{ matrix.os }}
