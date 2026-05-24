@@ -34,4 +34,4 @@ jobs:
           echo "CGO_LDFLAGS=-fuse-ld=lld" >> "$GITHUB_ENV"
         if: ${{ runner.os == 'Linux' }}
       - name: Build
-        run: make binary
+        run: go build
