@@ -12,13 +12,24 @@ import (
 )
 
 var windowSize = fyne.Size{Width: 800, Height: 600}
-var directory binding.String = binding.NewString()
+var srcDirectory binding.String = binding.NewString()
+var srcdupDirectory binding.String = binding.NewString()
 var sameFileList binding.StringList = binding.NewStringList()
 
-func oneFolderCheck(dir string) []string {
-	fileList := createfilelist(dir)
+func oneFolderCheck(srcDir string) []string {
+	fileList := createfilelist(srcDir)
 	fListMapHash := createmapfilehash(fileList)
-	sFiles := comparemap(fListMapHash)
+	sFiles := oneFolderDup(fListMapHash)
+	log.Printf("same file list: %v", sFiles)
+	return sFiles
+}
+
+func twoFolderCheck(srcDir string, srcdupDir string) []string {
+	srcFileList := createfilelist(srcDir)
+	dupsrcFileList := createfilelist(srcdupDir)
+	srcListMapHash := createmapfilehash(srcFileList)
+	dupsrcListMapHash := createmapfilehash(dupsrcFileList)
+	sFiles := twoFolderDup(srcListMapHash, dupsrcListMapHash)
 	log.Printf("same file list: %v", sFiles)
 	return sFiles
 }
@@ -30,37 +41,64 @@ func main() {
 	w := a.NewWindow("Filecheck")
 	w.Resize(windowSize)
 
-	// create button to select folder
-	folderSelectionButton := widget.NewButton("Sélection", func() {
-		dialog.ShowFolderOpen(func(dir fyne.ListableURI, err error) {
+	// create button to select first source folder
+	srcFolderSelectionButton := widget.NewButton("Sélection", func() {
+		dialog.ShowFolderOpen(func(srcDir fyne.ListableURI, err error) {
 			if err != nil {
 				dialog.ShowError(err, w)
 				return
 			}
-			directory.Set(dir.Path())
-			log.Println("selected folder in folderSelectionButton: ", dir.Path())
+			srcDirectory.Set(srcDir.Path())
+			log.Println("selected folder in folderSelectionButton: ", srcDir.Path())
+		}, w)
+	})
+
+	// create button to select second source folder
+	srcdupFolderSelectionButton := widget.NewButton("Sélection", func() {
+		dialog.ShowFolderOpen(func(srcdupDir fyne.ListableURI, err error) {
+			if err != nil {
+				dialog.ShowError(err, w)
+				return
+			}
+			srcdupDirectory.Set(srcdupDir.Path())
+			log.Println("selected folder in folderSelectionButton: ", srcdupDir.Path())
 		}, w)
 	})
 
 	//create a text box with text
-	showTextfolderSelect := widget.NewLabel("Dossier selectionné: ")
+	srcShowTextFolderSelect := widget.NewLabel("Premier dossier selectionné: ")
 
 	//create a text box with the name of the folder selected
-	showSelectedFolder := widget.NewLabelWithData(directory)
+	srcShowSelectedFolders := widget.NewLabelWithData(srcDirectory)
+
+	//create a text box with text
+	srcdupShowTextFolderSelect := widget.NewLabel("Second dossier selectionné: ")
+
+	//create a text box with the name of the folder selected
+	srcdupShowSelectedFolders := widget.NewLabelWithData(srcdupDirectory)
 
 	//create a text box with text
 	lbSameFiles := widget.NewLabel("Liste des fichiers identiques: ")
 
 	//button that will start the check process
-	checkFolderContent := widget.NewButton("Chercher les fichiers en doubles", func() {
+	checkFoldersContent := widget.NewButton("Chercher les fichiers en doubles", func() {
 		d := dialog.NewCustom("Recherche en cours", "Annuler", widget.NewProgressBarInfinite(), w)
 		d.Show()
-		folder, _ := directory.Get()
-		log.Println("Selected folder in checkFolderContent: ", folder)
-		sameFiles := oneFolderCheck(folder)
-		d.Hide()
-		log.Printf("same file list: %v", sameFiles)
-		sameFileList.Set(sameFiles)
+		srcFolder, _ := srcDirectory.Get()
+		srcdupFolder, _ := srcDirectory.Get()
+		if srcdupFolder == "" {
+			log.Println("Selected folder in checkFolderContent: ", srcFolder)
+			sameFiles := oneFolderCheck(srcFolder)
+			d.Hide()
+			log.Printf("same file list: %v", sameFiles)
+			sameFileList.Set(sameFiles)
+		} else {
+			log.Println("Selected folder in checkFolderContent: ", srcFolder, srcdupFolder)
+			sameFiles := twoFolderCheck(srcFolder, srcdupFolder)
+			d.Hide()
+			log.Printf("same file list: %v", sameFiles)
+			sameFileList.Set(sameFiles)
+		}
 	})
 
 	// create a text box with the name of the folder selected
@@ -79,10 +117,14 @@ func main() {
 		container.NewBorder(
 			container.NewVBox(
 				container.NewHBox(
-					showTextfolderSelect,
-					showSelectedFolder),
-				folderSelectionButton,
-				checkFolderContent,
+					srcShowTextFolderSelect,
+					srcShowSelectedFolders,
+					srcdupShowTextFolderSelect,
+					srcdupShowSelectedFolders,
+				),
+				srcFolderSelectionButton,
+				srcdupFolderSelectionButton,
+				checkFoldersContent,
 				lbSameFiles),
 			nil,
 			nil,

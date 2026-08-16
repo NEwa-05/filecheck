@@ -1,29 +1,29 @@
 package main
 
-import "log"
-
 var sameFilesList []string
 
-func comparemap(fileshamap map[string]string) []string {
+func oneFolderDup(fileshamap map[string]string) []string {
 
 	tempmap := make(map[string]struct{})
 
 	for k, v := range fileshamap {
 		_, has := tempmap[v]
 		if has {
-			log.Println(k)
 			sameFilesList = append(sameFilesList, k)
 		}
 		tempmap[v] = struct{}{}
 	}
+	return sameFilesList
+}
 
-	// 2 maps (folders)
-	//for k1, v1 := range fileshamap {
-	//	for k2, v2 := range fileshamap {
-	//		if v1 == v2 {
-	//			samefiles[k1] = k2
-	//		}
-	//	}
-	//}
+func twoFolderDup(srcFileshamap map[string]string, dupsrcFileshamap map[string]string) []string {
+
+	for _, v1 := range srcFileshamap {
+		for k2, v2 := range dupsrcFileshamap {
+			if v1 == v2 {
+				sameFilesList = append(sameFilesList, k2)
+			}
+		}
+	}
 	return sameFilesList
 }

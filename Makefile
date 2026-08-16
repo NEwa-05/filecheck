@@ -32,3 +32,8 @@ binary-windows-amd64: export GOARCH := amd64
 binary-windows-amd64: export BIN_NAME := filecheck.exe
 binary-windows-amd64:
 	@$(MAKE) binary
+
+binary-darwin-arm64: export GOOS := darwin
+binary-darwin-arm64: export GOARCH := arm64
+binary-darwin-arm64:
+	@$(MAKE) binary

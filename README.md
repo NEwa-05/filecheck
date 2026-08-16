@@ -20,4 +20,3 @@ make binary
 - Improve UI
 - add possibility to remove doublons
 - add possibility to create an archive with doublons files
-
