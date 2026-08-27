@@ -1,0 +1,10 @@
+// // create a text box with the name of the folder selected
+// showDuplicatesList := widget.NewListWithData(
+// 	sameFileList,
+// 	func() fyne.CanvasObject {
+// 		return widget.NewLabel("")
+// 	},
+
+// 	func(i binding.DataItem, o fyne.CanvasObject) {
+// 		o.(*widget.Label).Bind(i.(binding.String))
+// 	})
