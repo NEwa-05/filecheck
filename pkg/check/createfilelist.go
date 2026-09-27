@@ -10,8 +10,8 @@ import (
 func Createfilelist(folder string) []string {
 	fileList := make([]string, 0)
 	e := filepath.WalkDir(folder, func(path string, f fs.DirEntry, errors error) error {
-		unusedir, err := os.Lstat(path)
-		if unusedir.Mode().IsRegular() {
+		pathfile, err := os.Lstat(path)
+		if pathfile.Mode().IsRegular() {
 			fileList = append(fileList, path)
 		}
 		log.Print(err)

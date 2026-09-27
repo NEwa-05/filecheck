@@ -13,11 +13,9 @@ import (
 var WindowSize = fyne.Size{Width: 800, Height: 600}
 var FilecheckApp fyne.App = app.NewWithID("filecheck")
 var mainWindow fyne.Window
-var srcDirectory binding.String = binding.NewString()
-var sameFileList binding.StringList = binding.NewStringList()
-var oneFWindow fyne.Window
-var twoFWindow fyne.Window
-var srcdupDirectory binding.String = binding.NewString()
+var SrcDirectory binding.String = binding.NewString()
+var SrcdupDirectory binding.String = binding.NewString()
+var SameFileList binding.StringList = binding.NewStringList()
 
 func closeWindow(windowName fyne.Window) *widget.Button {
 	closeButton := widget.NewButton("Quitter", func() {
@@ -34,6 +32,9 @@ func returnWindow(windowName fyne.Window) *widget.Button {
 		windowName.Close()
 		mainWindow.Show()
 		log.Println("Return to main Window")
+		SrcDirectory.Set("")
+		SrcdupDirectory.Set("")
+		SameFileList.Set(nil)
 	})
 
 	return returnButton

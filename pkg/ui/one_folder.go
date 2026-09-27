@@ -11,9 +11,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-// var srcDirectory binding.String = binding.NewString()
-// var sameFileList binding.StringList = binding.NewStringList()
-// var oneFWindow fyne.Window
+var oneFWindow fyne.Window
 
 func oneFolderCheck(srcDir string) []string {
 	fileList := check.Createfilelist(srcDir)
@@ -37,7 +35,7 @@ func oneFolderWindow() {
 				dialog.ShowError(err, oneFWindow)
 				return
 			}
-			srcDirectory.Set(srcDir.Path())
+			SrcDirectory.Set(srcDir.Path())
 			log.Println("selected folder in folderSelectionButton: ", srcDir.Path())
 		}, oneFWindow)
 	})
@@ -46,26 +44,27 @@ func oneFolderWindow() {
 	srcShowTextFolderSelect := widget.NewLabel("Premier dossier selectionné: ")
 
 	//create a text box with the name of the folder selected
-	srcShowSelectedFolders := widget.NewLabelWithData(srcDirectory)
+	srcShowSelectedFolders := widget.NewLabelWithData(SrcDirectory)
 
 	//create a text box with text
 	lbSameFiles := widget.NewLabel("Liste des fichiers identiques: ")
 
 	//button that will start the check process
 	checkFoldersContent := widget.NewButton("Chercher les fichiers en doubles", func() {
+		var sameFiles []string
 		d := dialog.NewCustom("Recherche en cours", "Annuler", widget.NewProgressBarInfinite(), oneFWindow)
 		d.Show()
-		srcFolder, _ := srcDirectory.Get()
+		srcFolder, _ := SrcDirectory.Get()
 		log.Println("Selected folder in checkFolderContent: ", srcFolder)
-		sameFiles := oneFolderCheck(srcFolder)
+		sameFiles = oneFolderCheck(srcFolder)
 		d.Hide()
 		log.Printf("same file list: %v", sameFiles)
-		sameFileList.Set(sameFiles)
+		SameFileList.Set(sameFiles)
 	})
 
 	// create a text box with the name of the folder selected
 	showDuplicatesList := widget.NewListWithData(
-		sameFileList,
+		SameFileList,
 		func() fyne.CanvasObject {
 			return widget.NewLabel("")
 		},
