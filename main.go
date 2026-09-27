@@ -4,6 +4,6 @@ import "filecheck/pkg/ui"
 
 func main() {
 
-	ui.CreateDefWindow()
+	ui.CreateMainWindow()
 
 }

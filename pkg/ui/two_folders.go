@@ -11,8 +11,8 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-var twoFWindow fyne.Window
-var srcdupDirectory binding.String = binding.NewString()
+// var twoFWindow fyne.Window
+// var srcdupDirectory binding.String = binding.NewString()
 
 func twoFolderCheck(srcDir string, srcdupDir string) []string {
 	srcFileList := check.Createfilelist(srcDir)

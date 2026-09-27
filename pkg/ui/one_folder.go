@@ -11,9 +11,9 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-var srcDirectory binding.String = binding.NewString()
-var sameFileList binding.StringList = binding.NewStringList()
-var oneFWindow fyne.Window
+// var srcDirectory binding.String = binding.NewString()
+// var sameFileList binding.StringList = binding.NewStringList()
+// var oneFWindow fyne.Window
 
 func oneFolderCheck(srcDir string) []string {
 	fileList := check.Createfilelist(srcDir)
