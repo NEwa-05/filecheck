@@ -1,11 +1,9 @@
 package main
 
-import (
-	"filecheck/pkg/window"
-)
+import "filecheck/pkg/ui"
 
 func main() {
 
-	window.CreateInitWindow()
+	ui.CreateDefWindow()
 
 }
