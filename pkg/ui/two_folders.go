@@ -87,11 +87,11 @@ func twoFolderWindow() {
 		}
 	})
 
-	// create a text box with the name of the folder selected
+	// create a text box with the name and path of the duplicates
 	showDuplicatesList := widget.NewListWithData(
 		SameFileList,
 		func() fyne.CanvasObject {
-			return widget.NewLabel("")
+			return widget.NewLabel("two_folders_duplicate_list")
 		},
 
 		func(i binding.DataItem, o fyne.CanvasObject) {

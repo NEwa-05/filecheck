@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -66,29 +67,39 @@ func oneFolderWindow() {
 	showDuplicatesList := widget.NewListWithData(
 		SameFileList,
 		func() fyne.CanvasObject {
-			return widget.NewLabel("")
+			return widget.NewLabel("one_folder_duplicate_list")
+
 		},
 
 		func(i binding.DataItem, o fyne.CanvasObject) {
 			o.(*widget.Label).Bind(i.(binding.String))
-		})
+		},
+	)
 
 	// set window content
 	oneFWindow.SetContent(
-		container.NewVBox(
-			container.NewCenter(
-				srcFolderSelectionButton,
+		container.NewBorder(
+			container.NewVBox(
+				container.New(
+					layout.NewStackLayout(),
+					srcFolderSelectionButton,
+				),
+				srcShowTextFolderSelect,
+				srcShowSelectedFolders,
 			),
-			srcShowTextFolderSelect,
-			srcShowSelectedFolders,
-			container.NewCenter(
+			container.NewHSplit(
+				returnWindow(oneFWindow),
 				checkFoldersContent,
 			),
-			container.NewCenter(
-				returnWindow(oneFWindow),
+			nil,
+			nil,
+			container.NewBorder(
+				lbSameFiles,
+				nil,
+				nil,
+				nil,
+				showDuplicatesList,
 			),
-			lbSameFiles,
-			showDuplicatesList,
 		),
 	)
 	//show window when run
