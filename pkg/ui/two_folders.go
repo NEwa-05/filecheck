@@ -100,25 +100,33 @@ func twoFolderWindow() {
 
 	// set window content
 	twoFWindow.SetContent(
-		container.NewVBox(
-			container.NewCenter(
-				srcFolderSelectionButton,
+		container.NewBorder(
+			container.NewVBox(
+				container.NewHBox(
+					srcFolderSelectionButton,
+				),
+				srcShowTextFolderSelect,
+				srcShowSelectedFolders,
+				container.NewHBox(
+					srcdupFolderSelectionButton,
+				),
+				srcdupShowTextFolderSelect,
+				srcdupShowSelectedFolders,
 			),
-			srcShowTextFolderSelect,
-			srcShowSelectedFolders,
-			container.NewCenter(
-				srcdupFolderSelectionButton,
-			),
-			srcdupShowTextFolderSelect,
-			srcdupShowSelectedFolders,
-			container.NewCenter(
+
+			container.NewHSplit(
+				returnWindow(twoFWindow),
 				checkFoldersContent,
 			),
-			container.NewCenter(
-				returnWindow(twoFWindow),
+			nil,
+			nil,
+			container.NewBorder(
+				lbSameFiles,
+				nil,
+				nil,
+				nil,
+				showDuplicatesList,
 			),
-			lbSameFiles,
-			showDuplicatesList,
 		),
 	)
 

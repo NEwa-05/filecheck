@@ -102,6 +102,7 @@ func oneFolderWindow() {
 			),
 		),
 	)
+
 	//show window when run
 	oneFWindow.Show()
 }
