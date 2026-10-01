@@ -1,39 +1,43 @@
 name: Build Binaries
 
 on:
-  pull_request:
-    branches: [ "master" ]
-
+  release:
+    types: [published, created, released]
 env:
-  GO_VERSION: '1.22'
+  GO_VERSION: '1.26'
   CGO_ENABLED: 1
 
 jobs:
   build:
-    runs-on: fyneio/fyne-cross
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ windows ]
-        arch: [ amd64 ]
-        cc: [ x86_64-w64-mingw64-gcc ]
+        go-version: [stable]
+        os: [ubuntu-latest, windows-latest, macos-26]
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+      - name: Setup Go
+        uses: actions/setup-go@v6
         with:
-          fetch-depth: 0
-      - name: Set up MinGW
-        uses: egor-tensin/setup-mingw@v2
-        with:
-          platform: x64
-      - name: Set up Go ${{ env.GO_VERSION }}
-        uses: actions/setup-go@v5
-        env:
-          ImageOS: ${{ matrix.os }}-${{ matrix.arch }}
-        with:
-          go-version: ${{ env.GO_VERSION }}
+          go-version: ${{ matrix.go-version }}
+          go-version-file: "go.mod"
+      - name: Get dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends bc clang lld libgl1-mesa-dev libwayland-dev libx11-dev libxkbcommon-dev xorg-dev xvfb language-pack-en
+          echo "CC=clang" >> "$GITHUB_ENV"
+          echo "CGO_LDFLAGS=-fuse-ld=lld" >> "$GITHUB_ENV"
+        if: ${{ runner.os == 'Linux' }}
       - name: Build
-        env:
-          GOOS: ${{ matrix.os }}
-          GOARCH: ${{ matrix.arch }}
-          CC: ${{ matrix.cc }}
-        run: go build
+        run: go build -o filecheck-${{ matrix.os }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: filecheck-${{ matrix.os }}
+          path: ${{ github.workspace }}/filecheck-${{ matrix.os }}
+      - name: Add Artifact to release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: filecheck-${{ matrix.os }}

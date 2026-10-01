@@ -1,4 +1,4 @@
-package main
+package check
 
 import (
 	"crypto/sha1"
@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func createmapfilehash(dir []string) map[string]string {
+func Createmapfilehash(dir []string) map[string]string {
 	fileshamap := make(map[string]string)
 	for _, element := range dir {
 		f, err := os.Open(element)
