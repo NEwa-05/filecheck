@@ -14,9 +14,9 @@ import (
 var oneFWindow fyne.Window
 
 func oneFolderCheck(srcDir string) []string {
-	fileList := check.Createfilelist(srcDir)
-	fListMapHash := check.Createmapfilehash(fileList)
-	sFiles := check.OneFolderDup(fListMapHash)
+	srcFileList := check.Createfilelist(srcDir)
+	srcListMapHash := check.Createmapfilehash(srcFileList)
+	sFiles := check.OneFolderDup(srcListMapHash)
 	log.Printf("same file list: %v", sFiles)
 	return sFiles
 }

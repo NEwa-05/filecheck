@@ -20,5 +20,6 @@ func Createfilelist(folder string) []string {
 	if e != nil {
 		log.Print(e)
 	}
+	log.Printf("list of files: %v", fileList)
 	return fileList
 }
