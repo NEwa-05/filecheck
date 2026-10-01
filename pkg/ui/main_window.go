@@ -62,16 +62,26 @@ func CreateMainWindow() {
 
 	// set window content
 	mainWindow.SetContent(
-		container.NewVBox(
-			container.NewCenter(
-				oneFolderButton,
+		container.NewBorder(
+			container.NewBorder(
+				container.NewHSplit(
+					container.NewPadded(
+						oneFolderButton,
+					),
+					container.NewPadded(
+						twoFoldersButton,
+					),
+				),
+				nil,
+				nil,
+				nil,
 			),
-			container.NewCenter(
-				twoFoldersButton,
-			),
-			container.NewCenter(
+			container.NewPadded(
 				closeWindow(mainWindow),
 			),
+			nil,
+			nil,
+			nil,
 		),
 	)
 	//show window when run

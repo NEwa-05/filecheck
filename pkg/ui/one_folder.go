@@ -8,7 +8,6 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
-	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -30,7 +29,7 @@ func oneFolderWindow() {
 	oneFWindow.SetTitle("Filecheck_1_dossier")
 
 	// create button to select first source folder
-	srcFolderSelectionButton := widget.NewButton("Selection", func() {
+	srcFolderSelectionButton := widget.NewButton("Sélection du dossier à vérifier", func() {
 		dialog.ShowFolderOpen(func(srcDir fyne.ListableURI, err error) {
 			if err != nil {
 				dialog.ShowError(err, oneFWindow)
@@ -42,7 +41,7 @@ func oneFolderWindow() {
 	})
 
 	//create a text box with text
-	srcShowTextFolderSelect := widget.NewLabel("Premier dossier selectionné: ")
+	srcShowTextFolderSelect := widget.NewLabel("Dossier à vérifier: ")
 
 	//create a text box with the name of the folder selected
 	srcShowSelectedFolders := widget.NewLabelWithData(SrcDirectory)
@@ -67,7 +66,7 @@ func oneFolderWindow() {
 	showDuplicatesList := widget.NewListWithData(
 		SameFileList,
 		func() fyne.CanvasObject {
-			return widget.NewLabel("one_folder_duplicate_list")
+			return widget.NewLabel("")
 
 		},
 
@@ -80,21 +79,30 @@ func oneFolderWindow() {
 	oneFWindow.SetContent(
 		container.NewBorder(
 			container.NewVBox(
-				container.New(
-					layout.NewStackLayout(),
+				container.NewPadded(
 					srcFolderSelectionButton,
 				),
 				srcShowTextFolderSelect,
 				srcShowSelectedFolders,
 			),
-			container.NewHSplit(
-				returnWindow(oneFWindow),
-				checkFoldersContent,
+			container.NewVBox(
+				container.NewPadded(
+					returnWindow(oneFWindow),
+				),
 			),
 			nil,
 			nil,
 			container.NewBorder(
-				lbSameFiles,
+				container.NewBorder(
+					container.NewPadded(
+						checkFoldersContent,
+					),
+					lbSameFiles,
+					nil,
+					nil,
+					nil,
+				),
+
 				nil,
 				nil,
 				nil,

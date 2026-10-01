@@ -31,7 +31,7 @@ func twoFolderWindow() {
 	twoFWindow.SetTitle("Filecheck_2_dossiers")
 
 	// create button to select first source folder
-	srcFolderSelectionButton := widget.NewButton("Selection", func() {
+	srcFolderSelectionButton := widget.NewButton("Sélection du dossier source", func() {
 		dialog.ShowFolderOpen(func(srcDir fyne.ListableURI, err error) {
 			if err != nil {
 				dialog.ShowError(err, twoFWindow)
@@ -43,7 +43,7 @@ func twoFolderWindow() {
 	})
 
 	// create button to select second source folder
-	srcdupFolderSelectionButton := widget.NewButton("Selection", func() {
+	srcdupFolderSelectionButton := widget.NewButton("Sélection du dossier à vérifier", func() {
 		dialog.ShowFolderOpen(func(srcdupDir fyne.ListableURI, err error) {
 			if err != nil {
 				dialog.ShowError(err, twoFWindow)
@@ -55,13 +55,13 @@ func twoFolderWindow() {
 	})
 
 	//create a text box with text
-	srcShowTextFolderSelect := widget.NewLabel("Premier dossier selectionné: ")
+	srcShowTextFolderSelect := widget.NewLabel("Dossier source: ")
 
 	//create a text box with the name of the folder selected
 	srcShowSelectedFolders := widget.NewLabelWithData(SrcDirectory)
 
 	//create a text box with text
-	srcdupShowTextFolderSelect := widget.NewLabel("Second dossier selectionné: ")
+	srcdupShowTextFolderSelect := widget.NewLabel("Dossier à vérifier: ")
 
 	//create a text box with the name of the folder selected
 	srcdupShowSelectedFolders := widget.NewLabelWithData(SrcdupDirectory)
@@ -91,7 +91,7 @@ func twoFolderWindow() {
 	showDuplicatesList := widget.NewListWithData(
 		SameFileList,
 		func() fyne.CanvasObject {
-			return widget.NewLabel("two_folders_duplicate_list")
+			return widget.NewLabel("")
 		},
 
 		func(i binding.DataItem, o fyne.CanvasObject) {
@@ -102,26 +102,48 @@ func twoFolderWindow() {
 	twoFWindow.SetContent(
 		container.NewBorder(
 			container.NewVBox(
-				container.NewHBox(
-					srcFolderSelectionButton,
+				container.NewBorder(
+					container.NewPadded(
+						srcFolderSelectionButton,
+					),
+					nil,
+					nil,
+					nil,
+					nil,
 				),
 				srcShowTextFolderSelect,
 				srcShowSelectedFolders,
-				container.NewHBox(
-					srcdupFolderSelectionButton,
+				container.NewBorder(
+					container.NewPadded(
+						srcdupFolderSelectionButton,
+					),
+					nil,
+					nil,
+					nil,
+					nil,
 				),
 				srcdupShowTextFolderSelect,
 				srcdupShowSelectedFolders,
 			),
 
-			container.NewHSplit(
-				returnWindow(twoFWindow),
-				checkFoldersContent,
+			container.NewVBox(
+				container.NewPadded(
+					returnWindow(twoFWindow),
+				),
 			),
 			nil,
 			nil,
 			container.NewBorder(
-				lbSameFiles,
+				container.NewBorder(
+					container.NewPadded(
+						checkFoldersContent,
+					),
+					lbSameFiles,
+					nil,
+					nil,
+					nil,
+				),
+
 				nil,
 				nil,
 				nil,
