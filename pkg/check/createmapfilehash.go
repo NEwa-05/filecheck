@@ -2,6 +2,7 @@ package check
 
 import (
 	"crypto/sha1"
+	"encoding/base64"
 	"encoding/hex"
 	"io"
 	"log"
@@ -21,7 +22,11 @@ func Createmapfilehash(dir []string) map[string]string {
 			log.Fatal(err)
 		}
 		hn := hex.EncodeToString(h.Sum(nil))
-		fileshamap[element] = hn
+		fileshamap[base64.StdEncoding.EncodeToString([]byte(element))] = hn
 	}
+	for k, v := range fileshamap {
+		log.Printf("Maphash: %s, %s", k, v)
+	}
+
 	return fileshamap
 }
