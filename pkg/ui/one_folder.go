@@ -2,11 +2,11 @@ package ui
 
 import (
 	"filecheck/pkg/check"
+	"fmt"
 	"log"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 )
@@ -23,6 +23,8 @@ func oneFolderCheck(srcDir string) []string {
 
 func oneFolderWindow() {
 
+	var empty []string
+
 	oneFWindow := FilecheckApp.NewWindow("Filecheck_1_folder")
 	oneFWindow.RequestFocus()
 	oneFWindow.Resize(WindowSize)
@@ -33,7 +35,6 @@ func oneFolderWindow() {
 		dialog.ShowFolderOpen(func(srcDir fyne.ListableURI, err error) {
 			if err != nil {
 				dialog.ShowError(err, oneFWindow)
-				return
 			}
 			SrcDirectory.Set(srcDir.Path())
 			log.Println("selected folder in folderSelectionButton: ", srcDir.Path())
@@ -49,31 +50,55 @@ func oneFolderWindow() {
 	//create a text box with text
 	lbSameFiles := widget.NewLabel("Liste des fichiers identiques: ")
 
+	showDuplicatesList := widget.NewCheckGroup(
+		empty,
+		func(fileSelected []string) {
+			fmt.Println("Selected files:", fileSelected)
+		},
+	)
+
+	suppressButton := widget.NewButton("Sélection du dossier à Supprimer", func() {
+		dialog.ShowConfirm(
+			"Confirmation",
+			"Voulez vous supprimer les doublons sélectionné ?",
+			func(confirmed bool) {
+				if confirmed {
+				} else {
+					widget.NewLabel("Status: Suppression annulée.")
+					fmt.Println("User clicked No/Cancel")
+				}
+			},
+			oneFWindow,
+		)
+	})
+
+	suppressButton.Hide()
+
 	//button that will start the check process
 	checkFoldersContent := widget.NewButton("Chercher les fichiers en doubles", func() {
-		var sameFiles []string
 		d := dialog.NewCustom("Recherche en cours", "Annuler", widget.NewProgressBarInfinite(), oneFWindow)
 		d.Show()
 		srcFolder, _ := SrcDirectory.Get()
 		log.Println("Selected folder in checkFolderContent: ", srcFolder)
-		sameFiles = oneFolderCheck(srcFolder)
+		sameFiles := oneFolderCheck(srcFolder)
 		d.Hide()
 		log.Printf("same file list: %v", sameFiles)
-		SameFileList.Set(sameFiles)
+		if len(sameFiles) != 0 {
+			showDuplicatesList.Append("tous")
+			for _, v := range sameFiles {
+				showDuplicatesList.Append(v)
+			}
+			showDuplicatesList.Refresh()
+			suppressButton.Show()
+		}
+
 	})
 
-	// create a text box with the name of the folder selected
-	showDuplicatesList := widget.NewListWithData(
-		SameFileList,
-		func() fyne.CanvasObject {
-			return widget.NewLabel("")
-
-		},
-
-		func(i binding.DataItem, o fyne.CanvasObject) {
-			o.(*widget.Label).Bind(i.(binding.String))
-		},
-	)
+	if SrcDirectory == nil {
+		checkFoldersContent.Hide()
+	} else {
+		checkFoldersContent.Show()
+	}
 
 	// set window content
 	oneFWindow.SetContent(
@@ -102,8 +127,7 @@ func oneFolderWindow() {
 					nil,
 					nil,
 				),
-
-				nil,
+				suppressButton,
 				nil,
 				nil,
 				showDuplicatesList,
