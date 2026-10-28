@@ -8,7 +8,7 @@ import (
 var sameFilesList []string
 
 func OneFolderDup(srcFileshamap map[string]string) []string {
-
+	clear(sameFilesList)
 	tempmap := make(map[string]struct{})
 
 	for k, v := range srcFileshamap {
@@ -28,7 +28,7 @@ func OneFolderDup(srcFileshamap map[string]string) []string {
 }
 
 func TwoFolderDup(srcFileshamap map[string]string, srcdupFileshamap map[string]string) []string {
-
+	clear(sameFilesList)
 	tempmap := make(map[string]struct{})
 	var tempSameFilesList []string
 
