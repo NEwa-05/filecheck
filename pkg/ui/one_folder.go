@@ -4,6 +4,7 @@ import (
 	"filecheck/pkg/check"
 	"fmt"
 	"log"
+	"slices"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -22,8 +23,6 @@ func oneFolderCheck(srcDir string) []string {
 }
 
 func oneFolderWindow() {
-
-	var empty []string
 
 	oneFWindow := FilecheckApp.NewWindow("Filecheck_1_folder")
 	oneFWindow.RequestFocus()
@@ -51,18 +50,26 @@ func oneFolderWindow() {
 	lbSameFiles := widget.NewLabel("Liste des fichiers identiques: ")
 
 	showDuplicatesList := widget.NewCheckGroup(
-		empty,
+		SameFiles,
 		func(fileSelected []string) {
 			fmt.Println("Selected files:", fileSelected)
+			if len(fileSelected) >= 1 && fileSelected[0] != "tous" {
+				check.ToRemoveFileList = fileSelected
+				fmt.Println("Selected files:", fileSelected)
+			} else if slices.Contains(fileSelected, "tous") {
+				check.ToRemoveFileList = SameFiles
+				fmt.Println("Selected files:", check.ToRemoveFileList)
+			}
 		},
 	)
 
-	suppressButton := widget.NewButton("Sélection du dossier à Supprimer", func() {
+	suppressButton := widget.NewButton("Sélection des fichiers à Supprimer", func() {
 		dialog.ShowConfirm(
 			"Confirmation",
 			"Voulez vous supprimer les doublons sélectionné ?",
 			func(confirmed bool) {
 				if confirmed {
+
 				} else {
 					widget.NewLabel("Status: Suppression annulée.")
 					fmt.Println("User clicked No/Cancel")
@@ -80,18 +87,18 @@ func oneFolderWindow() {
 		d.Show()
 		srcFolder, _ := SrcDirectory.Get()
 		log.Println("Selected folder in checkFolderContent: ", srcFolder)
-		sameFiles := oneFolderCheck(srcFolder)
+		SameFiles = oneFolderCheck(srcFolder)
 		d.Hide()
-		log.Printf("same file list: %v", sameFiles)
-		if len(sameFiles) != 0 {
+		log.Printf("same file list: %v", SameFiles)
+		if len(SameFiles) != 0 {
 			showDuplicatesList.Append("tous")
-			for _, v := range sameFiles {
+			for _, v := range SameFiles {
 				showDuplicatesList.Append(v)
 			}
 			showDuplicatesList.Refresh()
+			showDuplicatesList.Show()
 			suppressButton.Show()
 		}
-
 	})
 
 	if SrcDirectory == nil {

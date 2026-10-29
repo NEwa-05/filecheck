@@ -16,6 +16,7 @@ var mainWindow fyne.Window
 var SrcDirectory binding.String = binding.NewString()
 var SrcdupDirectory binding.String = binding.NewString()
 var SameFileList binding.StringList = binding.NewStringList()
+var SameFiles []string
 
 func closeWindow(windowName fyne.Window) *widget.Button {
 	closeButton := widget.NewButton("Quitter", func() {
